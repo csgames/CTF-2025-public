@@ -1,24 +1,27 @@
-`CTF 2025`
-----------------
+# CTF
 
-This is the code of the CTF of 2025. The challenges, solutions and text are all in the challenge directory. If you want to run this with a local CTFd, you can do the following:
+Directeurs de compétition: Alexandre Aubut et Alexandre Lavoie
 
-First, run this on linux or wsl. Make sure to have Docker installed and running and that your user is part of the docker group.
-```
-# (Optional) Setup venv
-python -m venv .venv
-source .venv/bin/activate
+## Infrastructure
 
-# Install tool
-pip install ctf-builder
+### Requirements
 
-# Start challenge
+- [Docker](https://docs.docker.com/get-started/get-docker/)
+    - For Linux, make sure [your user is part of the docker group](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)
+- [Python](https://www.python.org/)
+    - [ctf-builder](https://pypi.org/project/ctf-builder/)
+
+### Challenges
+
+```bash
 ctf build
 ctf docker start
-
-# CTFd (keep terminal open to keep CTFd running)
-ctf ctfd dev
-
-# Stop challenge
-ctf docker stop
 ```
+
+### CTFd
+
+```bash
+ctf ctfd dev
+```
+
+Default credentials are username `admin` and password `admin`.
