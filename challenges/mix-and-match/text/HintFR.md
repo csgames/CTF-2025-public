@@ -1,0 +1,1 @@
+Chaque lettre a été changée pour une autre, mais toujours la même (ex: les "a" pourraient tous être des "e").

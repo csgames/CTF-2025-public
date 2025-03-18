@@ -1,0 +1,83 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "Crypto Bro",
+  "active": true,
+  "challenges": [
+    {
+      "value": 4,
+      "category": "Cryptographie",
+      "host": {
+        "index": 0,
+        "path": "/"
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/defiFR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/challengeEN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 1,
+          "texts": [
+            {
+              "language": "en",
+              "path": "text/hint.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "challenge/Dockerfile",
+      "healthcheck": {
+        "test": "ps -aux | grep python",
+        "retries": 3,
+        "interval": 5,
+        "timeout": 2
+      },
+      "ports": [
+        {
+          "type": "tcp",
+          "public": true,
+          "value": 10000
+        }
+      ],
+      "env": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        }
+      ]
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

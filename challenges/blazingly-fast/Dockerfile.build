@@ -1,0 +1,11 @@
+FROM alpine:latest AS build
+
+RUN apk add zig
+
+WORKDIR /build
+
+COPY challenge/game .
+
+RUN zig build
+
+RUN cp /build/zig-out/bin/game.wasm /build/game.wasm

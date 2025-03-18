@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>Is Today Friday the 13th?</title>
+        <style>
+            body {
+                background-color: black;
+                color: white;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+
+            .msg {
+                color: red;
+            }
+        </style>
+        <script>
+            async function isItFridayThe13th() {
+                let resp = await fetch("/is-today-friday-the-13th", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        format: "%A%t%d"
+                    })
+                });
+
+                let data = await resp.json();
+                document.getElementById("msg").innerHTML = data.msg;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Is Today Friday the 13th?</h1>
+            <button onclick="isItFridayThe13th()">Check</button>
+            <p id="msg" class="msg"></p>
+        </div>
+    </body>
+</html>

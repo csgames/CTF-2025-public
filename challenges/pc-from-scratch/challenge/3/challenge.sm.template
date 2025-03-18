@@ -1,0 +1,188 @@
+$SECTION RAM
+
+@program
+    $ZEROS 512
+
+@read_end
+    $ZEROS 1
+
+$SECTION ROM
+
+@entry
+    INT @main
+    JMP
+
+@flag
+    $DATA "{FLAG}", 0
+
+@header
+    $DATA "Welcome to PfSaaS!", 0
+
+@leave
+    $DATA "Goodbye!", 0
+
+@main
+    @main_header
+        INT @main_header_next
+        INT @header
+        INT @print
+        JMP
+    @main_header_next
+
+    INT OUT
+    INT 0
+    STORE
+
+    # Print "> "
+    INT OUT
+    INT 62
+    STORE
+
+    INT OUT
+    INT 32
+    STORE
+
+    @main_read
+        INT @main_read_next
+        INT @program
+        INT 512
+        INT @read
+        JMP
+    @main_read_next
+
+    # Jump to program
+    @main_program
+        INT @main_program_next
+        INT @program
+        JMP
+    @main_program_next
+
+    INT OUT
+    INT 0
+    STORE
+
+    @main_leave
+        INT @main_leave_next
+        INT @leave
+        INT @print
+        JMP
+    @main_leave_next
+
+    @main_exit
+        HLT
+
+@print # (return, buffer)
+    @print_loop
+        # t = *buffer
+        DUP
+        LOAD
+
+        # OUT <- t
+        DUP
+        INT OUT
+        SWAP
+        STORE
+
+        # t == 0 -> @print_exit
+        INT 0
+        EQ
+        INT @print_exit
+        SWAP
+        JNZ
+
+        # buffer++
+        INT 1
+        ADD
+
+        # Loop
+        INT @print_loop
+        JMP
+
+    @print_exit
+        DROP
+        JMP
+
+@read # (return, buffer, max_size)
+    @read_init
+        # @read_end = buffer + max_size - 1
+        SWAP
+        DUP
+        ROT
+        ADD
+        INT 1
+        SUB
+        INT @read_end
+        SWAP
+        STORE
+
+    @read_loop
+        # buffer > @read_end -> @read_exit
+        DUP
+        INT @read_end
+        LOAD
+        GT
+        INT @read_exit
+        SWAP
+        JNZ
+
+        # t = IN
+        INT IN
+        LOAD
+
+        # OUT <- t
+        DUP
+        INT OUT
+        SWAP
+        STORE
+
+        # t == 0 -> @read_early_exit
+        DUP
+        INT 0
+        EQ
+        INT @read_early_exit
+        SWAP
+        JNZ
+
+        # if t != ' ': @read_check_true else @read_check_false
+        DUP
+        INT 32
+        NEQ
+        INT @read_check_true
+        SWAP
+        JNZ
+        @read_check_false
+            # buffer++
+            DROP
+            INT 1
+            ADD
+
+            INT @read_check_end
+            JMP
+        @read_check_true
+            # *buffer = *buffer * 10 + t - '0'
+            SWAP
+            DUP
+            ROT
+            LOAD
+            INT 10
+            MUL
+            ADD
+            INT 48
+            SUB
+            SWAP
+            DUP
+            ROT
+            SWAP
+            STORE
+        @read_check_end
+
+        # Loop
+        INT @read_loop
+        JMP
+
+    @read_early_exit
+        DROP
+
+    @read_exit
+        DROP
+        JMP

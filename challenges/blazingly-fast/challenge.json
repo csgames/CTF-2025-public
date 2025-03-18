@@ -1,0 +1,133 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "Blazingly Fast",
+  "active": true,
+  "challenges": [
+    {
+      "value": 16,
+      "category": "Rétro-Ingénierie",
+      "host": {
+        "index": 0,
+        "path": "/"
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/CHAL-EN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 1,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HINT1-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HINT1-EN.md"
+            }
+          ]
+        },
+        {
+          "cost": 3,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HINT2-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HINT2-EN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "directory",
+          "path": "challenge",
+          "name": "source.zip"
+        },
+        {
+          "type": "directory",
+          "path": "client"
+        },
+        {
+          "type": "file",
+          "path": "build/game.wasm"
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "files": [
+        {
+          "source": "/build/game.wasm",
+          "destination": "build/game.wasm"
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "challenge/Dockerfile",
+      "ports": [
+        {
+          "type": "ws",
+          "public": true,
+          "value": 3000
+        }
+      ],
+      "env": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        },
+        {
+          "type": "map",
+          "map": {
+            "GAME_WASM": "/app/game.wasm"
+          }
+        }
+      ],
+      "healthcheck": {
+        "test": "netstat -ltn | grep -c 3000",
+        "retries": 3,
+        "interval": 0.5,
+        "timeout": 1.5
+      }
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

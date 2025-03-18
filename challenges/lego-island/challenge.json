@@ -1,0 +1,82 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "A Special Island",
+  "active": true,
+  "challenges": [
+    {
+      "category": "Stéganographie",
+      "value": 8,
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/CHAL-EN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 2,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HINT1-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HINT1-EN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "path": "build/NOCD.SI"
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "source": "/build/NOCD.SI",
+          "destination": "build/NOCD.SI"
+        }
+      ]
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

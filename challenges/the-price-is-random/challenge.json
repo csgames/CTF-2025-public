@@ -1,0 +1,99 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "The Price is Random",
+  "active": true,
+  "challenges": [
+    {
+      "value": 12,
+      "category": "Cryptographie",
+      "host": {
+        "index": 0,
+        "path": "/"
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/CHAL-EN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 3,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HINT1-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HINT1-EN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "directory",
+          "path": "challenge"
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "challenge/Dockerfile",
+      "ports": [
+        {
+          "type": "http",
+          "public": true,
+          "value": 5000
+        }
+      ],
+      "env": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        },
+        {
+          "type": "map",
+          "map": {
+            "SECRET_KEY": "MMkxpRXsLYsOzXOG0vib2Fx3eji4xCds"
+          }
+        }
+      ],
+      "healthcheck": {
+        "test": "netstat -ltn | grep -c 5000",
+        "retries": 3,
+        "interval": 0.5,
+        "timeout": 1.5
+      }
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

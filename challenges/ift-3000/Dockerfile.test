@@ -1,0 +1,10 @@
+FROM alpine:latest AS test
+
+RUN apk add --no-cache build-base nodejs php python3
+
+WORKDIR /test
+
+COPY build /test/build
+COPY solve /test/solution
+
+CMD ["python", "/test/solution/solve.py"]

@@ -1,0 +1,2 @@
+requests==2.32.3
+randcrack==0.2.0

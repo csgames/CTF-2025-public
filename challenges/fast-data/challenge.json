@@ -1,0 +1,109 @@
+{
+    "$schema": "../../doc/challenge.json",
+    "name": "Fast Data",
+    "tag": "fast-data",
+    "active": true,
+    "challenges": [
+      {
+        "value": 16,
+        "category": "Web",
+        "host": {
+          "index": 0,
+          "path": "/"
+        },
+        "descriptions": [
+          {
+            "language": "fr",
+            "path": "text/defiFR.md"
+          },
+          {
+            "language": "en",
+            "path": "text/challengeEN.md"
+          }
+        ],
+        "hints": [
+          {
+            "cost": 4,
+            "texts": [
+              {
+                "language": "fr",
+                "path": "text/HintFR.md"
+              },
+              {
+                "language": "en",
+                "path": "text/HintEN.md"
+              }
+            ]
+          }
+        ],
+        "flags": [
+          {
+            "regex": false,
+            "case_sensitive": true,
+            "values": {
+              "type": "env",
+              "path": "FLAG",
+              "keys": [
+                "FLAG"
+              ]
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "type": "directory",
+            "name": "challenge.zip",
+            "path": "challenge"
+          }
+        ]
+      }
+    ],
+    "deploy": [
+      {
+        "type": "docker",
+        "path": "challenge/server/Dockerfile",
+        "ports": [
+          {
+            "type": "http",
+            "public": true,
+            "value": 1337
+          }
+        ],
+        "env": [
+          {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          },
+          {
+            "type": "env",
+            "path": "CONFIG",
+            "keys": [
+              "SECRET"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "docker",
+        "path": "challenge/bot/Dockerfile",
+        "env": [
+          {
+            "type": "map",
+            "map": {
+              "HOST": "fast-data-0"
+            }
+          },
+          {
+            "type": "env",
+            "path": "CONFIG",
+            "keys": [
+              "SECRET"
+            ]
+          }
+        ]
+      }
+    ]
+  }

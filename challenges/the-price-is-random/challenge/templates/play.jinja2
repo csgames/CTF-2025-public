@@ -1,0 +1,39 @@
+<html>
+    <head>
+        {% include "components/head.jinja2" %}
+    </head>
+    <body>
+        {% include "components/header.jinja2" %}
+        <div class="d-flex gap-2 justify-content-center p-2">
+            <img class="img-thumbnail" style="max-width: 300px" alt="Item" src="/static/items/{{ image }}" />
+        </div>
+        <div class="text-center p-2">
+            <h3>{{ title }}</h3>
+            <p class="fst-italic">{{ description }}</p>
+        </div>
+        <div class="p-2">
+            {% if status == 1 %}
+            <div class="alert alert-success" role="alert">
+                Correct!
+            </div>
+            <audio autoplay>
+                <source src="/static/sounds/correct.mp3" type="audio/mp3">
+            </audio> 
+            {% elif status == 2 %}
+            <div class="alert alert-danger" role="alert">
+                Nope, the prize was ${{ price }}
+            </div>
+            <audio autoplay>
+                <source src="/static/sounds/wrong.mp3" type="audio/mp3">
+            </audio> 
+            {% endif %}
+        </div>
+        <form class="d-flex flex-column gap-2 justify-content-center p-2" action="/play" method="POST">
+            <input type="number" class="form-control" name="bid" placeholder="Amount" min="0">
+            <button class="btn btn-warning">Bid</button>
+        </form>
+        <audio autoplay loop>
+            <source src="/static/sounds/play.mp3" type="audio/mp3">
+        </audio>
+    </body>
+</html>

@@ -1,0 +1,1 @@
+Back already? You managed to get the bricks unstuck or you got lost in the building? Either way, the SREs (site reliability engineering team) are asking for the printer logs to investigate the incident. If we weren't already having it bad enough, the licensing server is down. The logging feature is obviously a premium feature. Maybe you can find another way?

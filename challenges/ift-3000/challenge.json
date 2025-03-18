@@ -1,0 +1,108 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "IFT-3000",
+  "active": true,
+  "challenges": [
+    {
+      "value": 4,
+      "category": "Stéganographie",
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/CHAL-EN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 1,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HINT1-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HINT1-EN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "path": "build/assignment.txt"
+        },
+        {
+          "type": "file",
+          "path": "build/devoir.txt"
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "key": "FLAG"
+        }
+      ],
+      "files": [
+        {
+          "source": "/build/assignment.txt",
+          "destination": "build/assignment.txt"
+        },
+        {
+          "source": "/build/devoir.txt",
+          "destination": "build/devoir.txt"
+        }
+      ]
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test",
+      "env": [
+        {
+          "type": "map",
+          "map": {
+            "LANG": "en"
+          }
+        }
+      ]
+    },
+    {
+      "type": "docker",
+      "path": "Dockerfile.test",
+      "env": [
+        {
+          "type": "map",
+          "map": {
+            "LANG": "fr"
+          }
+        }
+      ]
+    }
+  ]
+}

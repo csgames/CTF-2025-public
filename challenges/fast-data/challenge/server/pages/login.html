@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/login.css">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' https://*.github.io/FastDataStaticFile/">
+        <script src="https://fastdatadev.github.io/FastDataStaticFile/navbar.js" crossorigin="anonymous" defer></script>
+        <script src="/static/js/login.js" defer></script>
+    </head>
+    <body>
+        <div class="navbar">
+            <div>
+                <div id="indexBtn" class="navbarTitle">
+                    Welcome to Fast Data!
+                </div>
+                <div id="dataBtn" class="navbarButton">
+                    Try it out!
+                </div>
+                <div id="adminBtn" class="navbarButton">
+                    Admin Panel
+                </div>
+                <div id="loginBtn" class="navbarButton">
+                    Login
+                </div>
+            </div>
+            <div>
+                <img src="/static/img/logo.png">
+            </div> 
+        </div>
+        <div class="main">
+            <div class="login">
+                <div>
+                    <label for="username">Username</label>
+                    <br />
+                    <input class="input" id="username">    
+                </div>
+
+                <div>
+                    <label for="password">Password</label>
+                    <br />
+                    <input class="input" id="password" type="password">
+                </div>
+
+                <button class="connectBtn" id="connectBtn">Connect</button>
+            </div>
+            <div class="msg" id="msg"></div>
+        </div>
+    </body>
+</html>

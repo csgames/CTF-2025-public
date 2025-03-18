@@ -1,0 +1,3 @@
+Salut, je suis Marc! Vous devez être l'équipe TI? Les employés de notre installation à l'étranger se plaignent de rencontrer des problèmes avec leur imprimante de briques ZEROZ. Ça fait une semaine depuis la dernière impression, nous perdons de bons clients à cause de ça... Ils disent que les briques continuent d'être coincer en haut de la *pile*. Pouvez-vous vous connecter à l'imprimante et voir ce qui se passe?
+
+Si ça peut aider, ZEROZ nous a envoyé le code source de leur imprimante parce que nous sommes un de leur meilleur client. Vous pouvez le trouver dans `source.zip`. Assurez-vous de ne pas patir avec, car il est sous un accord de confidentialité très strict.

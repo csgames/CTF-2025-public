@@ -1,0 +1,10 @@
+FROM python:alpine AS build
+
+WORKDIR /build
+
+ARG FLAG=FLAG
+
+COPY challenge ./challenge
+
+RUN FLAG=$FLAG python /build/challenge/build.py en > /build/assignment.txt
+RUN FLAG=$FLAG python /build/challenge/build.py fr > /build/devoir.txt

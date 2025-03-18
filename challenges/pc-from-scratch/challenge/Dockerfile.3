@@ -1,0 +1,31 @@
+FROM python:alpine AS build
+
+WORKDIR /build
+
+COPY lib/pfs /build/pfs
+COPY lib/main.py /build/
+
+COPY 3/build.py /build/
+COPY 3/challenge.sm.template /build/
+
+ARG FLAG3=FLAG3
+
+RUN FLAG=${FLAG3} python /build/build.py
+
+RUN python /build/main.py asm /build/challenge.sm -o /build/challenge.sx
+
+FROM python:alpine AS runner
+
+RUN apk add socat
+
+WORKDIR /app
+
+COPY lib/pfs /app/pfs
+COPY 3/app.py /app/
+
+COPY --from=build /build/challenge.sx /app/
+
+RUN chmod +x /app/app.py
+
+EXPOSE 9001
+CMD ["socat", "TCP-LISTEN:9001,fork,reuseaddr", "EXEC:/app/app.py,pty,echo=0,raw"]

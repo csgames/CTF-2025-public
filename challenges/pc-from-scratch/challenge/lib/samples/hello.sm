@@ -1,0 +1,75 @@
+$SECTION RAM
+
+@zero
+    $ZEROS 1
+
+@print_ptr
+    $ZEROS 1
+
+$SECTION ROM
+
+@main
+# INP: []
+# OUT: []
+
+    @main_init
+        INT @main_init_end
+        INT @msg
+        INT @print
+        JMP
+    @main_init_end
+
+    @main_end
+        HLT
+
+@print 
+# INP: [return, address]
+# OUT: []
+
+    @print_init
+        # @print_ptr = address
+        INT @print_ptr
+        SWAP
+        STORE
+
+    @print_loop
+        # *@print_ptr == 0 -> @print_loop_end
+        INT @print_loop_end
+        INT @print_ptr
+        LOAD
+        LOAD
+        INT 0
+        EQ
+        JNZ
+
+        # Push to OUT
+        INT OUT
+        INT @print_ptr
+        LOAD
+        LOAD
+        STORE
+
+        # Increment @print_ptr
+        INT @print_ptr
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @print_loop
+        JMP
+    @print_loop_end
+
+    @print_end
+        # Print
+        INT OUT
+        INT 0
+        STORE
+
+        # Return
+        JMP
+
+@msg
+    $DATA "Hello World!" 0

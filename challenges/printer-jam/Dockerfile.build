@@ -1,0 +1,16 @@
+FROM ubuntu:24.04 AS build
+
+# Install requirements
+RUN apt update
+RUN DEBIAN_FRONTEND=noninteractive apt -y install gcc
+
+# Build args
+ARG FLAG1="FLAG1"
+
+# Create worker
+WORKDIR /home/worker
+
+COPY challenge/worker .
+
+RUN sed -i -e "s/\"FLAG1\"/\"${FLAG1}\"/g" main.c
+RUN gcc -w -Wl,-z,relro,-z,now -no-pie main.c -o worker && rm main.c main.h

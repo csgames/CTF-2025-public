@@ -1,0 +1,6 @@
+$SECTION ROM
+
+@start
+    $DATA "\0", 1, 2, 3, 4
+    $DATA "A" "\x42" 67 0x44 0b1000101
+@end

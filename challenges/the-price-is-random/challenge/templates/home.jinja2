@@ -1,0 +1,18 @@
+<html>
+    <head>
+        {% include "components/head.jinja2" %}
+    </head>
+    <body>
+        {% include "components/header.jinja2" %}
+        <h3 class="text-center pt-4 pb-3">Welcome to The Price Is Random!</h3>
+        <div class="d-flex justify-content-center p-2">
+            <img alt="Host" style="max-width: 500px" src="/static/images/host.png" />
+        </div>
+        <form class="d-flex flex-column justify-content-center p-2" action="/play" method="GET">
+            <button class="btn btn-warning">Play</button>
+        </form>
+        <audio autoplay loop>
+            <source src="/static/sounds/theme.mp3" type="audio/mp3">
+        </audio> 
+    </body>
+</html>

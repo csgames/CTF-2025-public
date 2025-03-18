@@ -1,0 +1,1 @@
+I think our prof for IFT-3000 gave us an impossible assignment... I tried solving it with ChatGPT and it had no clue what was going on. I haven't been listening to class and it's due tonight. Can you help me?

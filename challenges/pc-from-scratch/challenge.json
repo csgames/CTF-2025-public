@@ -1,0 +1,270 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "PC From Scratch",
+  "active": true,
+  "challenges": [
+    {
+      "name": "Hello World (1/4)",
+      "category": "Rétro-Ingénierie",
+      "value": 4,
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/0/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/0/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG0"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "name": "documentation.md",
+          "path": "text/doc/EN.md"
+        },
+        {
+          "type": "file",
+          "name": "emulator.sb3",
+          "path": "build/emulator.sb3"
+        },
+        {
+          "type": "file",
+          "name": "challenge.sx",
+          "path": "build/0/challenge.sx"
+        }
+      ],
+      "next": 1
+    },
+    {
+      "name": "Risky Adventure Map (2/4)",
+      "category": "Rétro-Ingénierie",
+      "value": 8,
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/1/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/1/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG1"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "name": "challenge.sx",
+          "path": "build/1/challenge.sx"
+        }
+      ],
+      "next": 3
+    },
+    {
+      "name": "Really Secure Algorithm (3/4)",
+      "category": "Cryptographie",
+      "value": 16,
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/2/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/2/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG2"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "name": "challenge.sx",
+          "path": "build/2/challenge.sx"
+        },
+        {
+          "type": "file",
+          "name": "output",
+          "path": "build/2/output"
+        }
+      ],
+      "next": 3
+    },
+    {
+      "name": "PfSaaS (4/4)",
+      "category": "Pwnage",
+      "value": 16,
+      "host": {
+        "index": 0
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/3/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/3/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG3"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "file",
+          "name": "challenge.sx",
+          "path": "build/3/challenge.sx"
+        }
+      ],
+      "next": 2
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG0",
+            "FLAG1",
+            "FLAG2"
+          ]
+        },
+        {
+          "type": "map",
+          "map": {
+            "P": "669711457553",
+            "Q": "700596383621",
+            "KEY": "+-*K3Y/^&!"
+          }
+        }
+      ],
+      "files": [
+        {
+          "source": "/build/emulator.sb3",
+          "destination": "build/emulator.sb3"
+        },
+        {
+          "source": "/build/0/challenge.sx",
+          "destination": "build/0/challenge.sx"
+        },
+        {
+          "source": "/build/0/challenge.sm",
+          "destination": "build/0/challenge.sm"
+        },
+        {
+          "source": "/build/1/challenge.sx",
+          "destination": "build/1/challenge.sx"
+        },
+        {
+          "source": "/build/1/challenge.sm",
+          "destination": "build/1/challenge.sm"
+        },
+        {
+          "source": "/build/2/challenge.sx",
+          "destination": "build/2/challenge.sx"
+        },
+        {
+          "source": "/build/2/challenge.sm",
+          "destination": "build/2/challenge.sm"
+        },
+        {
+          "source": "/build/2/output",
+          "destination": "build/2/output"
+        },
+        {
+          "source": "/build/3/challenge.sm",
+          "destination": "build/3/challenge.sm"
+        },
+        {
+          "source": "/build/3/challenge.sx",
+          "destination": "build/3/challenge.sx"
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "challenge/Dockerfile.3",
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG3"
+          ]
+        }
+      ],
+      "ports": [
+        {
+          "type": "tcp",
+          "public": true,
+          "value": 9001
+        }
+      ],
+      "healthcheck": {
+        "test": "ps -a | grep -c socat",
+        "retries": 3,
+        "interval": 0.5,
+        "timeout": 1.5
+      }
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

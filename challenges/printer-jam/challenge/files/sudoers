@@ -1,0 +1,3 @@
+worker ALL=(root) NOPASSWD: /printer/print.sh
+worker ALL=(root) NOPASSWD: /printer/queue.sh *
+worker ALL=(root) NOPASSWD: /printer/unjam.sh

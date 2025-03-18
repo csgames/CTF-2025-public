@@ -1,0 +1,255 @@
+$SECTION RAM
+
+@zero
+    $ZEROS 1
+
+@print_ptr
+    $ZEROS 1
+
+@decrypt_dp
+    $ZEROS 1
+
+@decrypt_kp
+    $ZEROS 1
+
+@decrypt_op
+    $ZEROS 1
+
+@decrypt_dpe
+    $ZEROS 1
+
+@clear_p
+    $ZEROS 1
+
+@clear_pe
+    $ZEROS 1
+
+@padding
+    $ZEROS 504
+
+@decrypt_out
+    $ZEROS 256
+
+@decrypt_out_end
+    $ZEROS 1
+
+$SECTION ROM
+
+@main
+    @main_decrypt
+        INT @main_decrypt_end
+        INT @data
+        INT @data_end
+        INT @decrypt
+        JMP
+    @main_decrypt_end
+
+    @main_clear
+        INT @main_clear_end
+        INT @padding
+        INT @decrypt_out_end
+        INT @clear
+        JMP
+    @main_clear_end
+
+    @main_print
+        INT @main_print_end
+        INT @msg
+        INT @print
+        JMP
+    @main_print_end
+
+    @main_end
+        HLT
+
+@print # (address, return)
+    @print_init
+        # @print_ptr = address
+        INT @print_ptr
+        SWAP
+        STORE
+
+    @print_loop
+        # Check *@print_ptr != 0
+        INT @print_end
+        INT @print_ptr
+        LOAD
+        LOAD
+        INT 0
+        EQ
+        JNZ
+
+        # Push to OUT
+        INT OUT
+        INT @print_ptr
+        LOAD
+        LOAD
+        STORE
+
+        # Increment @print_ptr
+        INT @print_ptr
+        INT @print_ptr
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @print_loop
+        JMP
+
+    @print_end
+        # Print
+        INT OUT
+        INT 0
+        STORE
+
+        # Return
+        JMP
+
+@key
+    $DATA "{KEY}"
+@key_end
+
+@decrypt # (end, start, return)
+    @decrypt_init
+        INT @decrypt_dpe
+        SWAP
+        STORE
+
+        INT @decrypt_dp
+        SWAP
+        STORE
+
+        INT @decrypt_kp 
+        INT @key
+        STORE
+
+        INT @decrypt_op
+        INT @decrypt_out
+        STORE
+
+    @decrypt_loop
+        # @decrypt_dp == @decrypt_dpe -> @decrypt_end
+        INT @decrypt_dp
+        LOAD
+        INT @decrypt_dpe
+        LOAD
+        EQ
+        INT @decrypt_end
+        SWAP
+        JNZ
+
+        # temp = *@decrypt_dp ^ *@decrypt_kp
+        INT @decrypt_dp
+        LOAD
+        LOAD
+        INT @decrypt_kp
+        LOAD
+        LOAD
+        XOR
+
+        # *@decrypt_op = temp
+        INT @decrypt_op
+        LOAD
+        SWAP
+        STORE
+
+        # @decrypt_dp++
+        INT @decrypt_dp
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # @decrypt_op++
+        INT @decrypt_op
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # @decrypt_kp = (@decrypt_kp < @key_end - 1) ? @decrypt_kp + 1 : @key 
+        INT @decrypt_kp
+        DUP
+        LOAD
+        INT @key_end
+        INT 1
+        SUB
+        LT
+        INT @decrypt_kp_increment
+        SWAP
+        JNZ
+        @decrypt_kp_overflow
+            INT @key
+            STORE
+            INT @decrypt_kp_end
+            JMP
+        @decrypt_kp_increment
+            INT @decrypt_kp
+            LOAD
+            INT 1
+            ADD
+            STORE
+        @decrypt_kp_end
+            # pass
+
+        # Loop
+        INT @decrypt_loop
+        JMP
+
+    @decrypt_end
+        # Return
+        JMP
+
+@data
+    $DATA {DATA}
+@data_end
+
+@clear # (end, start, return)
+    @clear_init
+        INT @clear_pe
+        SWAP
+        STORE
+
+        INT @clear_p
+        SWAP
+        STORE
+
+    @clear_loop
+        # @clear_p == @clear_pe -> @clear_end
+        INT @clear_p
+        LOAD
+        INT @clear_pe
+        LOAD
+        EQ
+        INT @clear_end
+        SWAP
+        JNZ
+
+        # *@clear_p = 0
+        INT @clear_p
+        LOAD
+        INT 0
+        STORE
+
+        # @clear_p++
+        INT @clear_p
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @clear_loop
+        JMP
+
+    @clear_end
+        # Return
+        JMP
+
+@msg
+    $DATA "Sorry scratcher, the flag is in another Risky Adventure Map..." 0

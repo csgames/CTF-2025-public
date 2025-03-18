@@ -1,0 +1,82 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "Mix And Match",
+  "active": true,
+  "challenges": [
+    {
+      "value": 8,
+      "category": "Cryptographie",
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/defiFR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/challengeEN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 2,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HintFR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HintEN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+      {
+        "type": "file",
+        "path": "build/defiFR.txt"
+      },
+      {
+        "type": "file",
+        "path": "build/challEN.txt"
+      }
+    ]
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "key": "FLAG"
+        }
+      ],
+      "files": [
+        {
+          "source": "/build/challenge/fr.txt",
+          "destination": "build/defiFR.txt"
+        },
+        {
+          "source": "/build/challenge/en.txt",
+          "destination": "build/challEN.txt"
+        }
+      ]
+    }
+  ]
+}

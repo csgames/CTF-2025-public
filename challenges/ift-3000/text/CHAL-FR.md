@@ -1,0 +1,1 @@
+Je pense que notre prof pour IFT-3000 nous a donné un devoir impossible... J'ai essayé de le résoudre avec ChatGPT et il n'avait aucune idée de ce qui se passait. Je n'ai pas écouté en classe et il est dû ce soir. Peux-tu m'aider?

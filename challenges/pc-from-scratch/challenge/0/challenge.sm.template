@@ -1,0 +1,101 @@
+$SECTION RAM
+
+@zero
+    $ZEROS 1
+
+@i
+    $ZEROS 1
+
+@size
+    $ZEROS 1
+
+$SECTION ROM
+
+@main
+    @main_init
+        # @i = 0
+        INT @i
+        INT 0
+        STORE
+
+        # @size = len(@data)
+        INT @size
+        INT @data_end
+        INT @data
+        SUB
+        STORE
+
+        INT @main_loop
+        JMP
+
+    @main_junk
+        INT @i
+        INT 0
+        LOAD
+
+        INT 12
+        AND
+
+        INT 14
+        OR
+
+        INT 17
+        XOR
+
+        INT @main_loop
+        JMP
+
+    @main_loop
+        # @i != @size
+        INT @size
+        LOAD
+        INT @i
+        LOAD
+        EQ
+        INT @main_end
+        SWAP
+        JNZ
+
+        # temp = @data[@i] ^ @main[@i] 
+        INT @data
+        INT @i
+        LOAD
+        ADD
+        LOAD
+        INT @main
+        INT @i
+        LOAD
+        ADD
+        LOAD
+        XOR
+
+        # OUT <- temp
+        INT OUT
+        SWAP
+        STORE
+
+        # @i++
+        INT @i
+        LOAD
+        INT 1
+        ADD
+        INT @i
+        SWAP
+        STORE
+
+        # Loop
+        INT @main_loop
+        JMP
+
+    @main_end
+        # Print
+        INT OUT
+        INT 0
+        STORE
+
+        # Done
+        HLT
+
+@data
+    $DATA {DATA}
+@data_end

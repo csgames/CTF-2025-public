@@ -1,0 +1,21 @@
+$SECTION ROM
+
+@main
+    # Set to desired error
+    INT @op
+    JMP
+
+@op
+    $DATA "~"
+
+@stack
+    DROP
+
+@read
+    INT 99999
+    LOAD
+
+@write
+    INT 99999
+    INT 0
+    STORE

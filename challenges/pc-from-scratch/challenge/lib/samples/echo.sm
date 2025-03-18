@@ -1,0 +1,35 @@
+$SECTION ROM
+
+@main
+    @main_loop
+        # Print "> " 
+        INT OUT
+        INT 62
+        STORE
+        INT OUT
+        INT 32
+        STORE
+
+        @main_input_loop
+            # t = KEY
+            INT IN
+            LOAD
+
+            # OUT <- t
+            DUP
+            INT OUT
+            SWAP
+            STORE
+
+            # t != 0 -> loop else continue 
+
+            # Loop
+            INT 0
+            NEQ
+            INT @main_input_loop
+            SWAP
+            JNZ
+
+        # Loop
+        INT @main_loop
+        JMP

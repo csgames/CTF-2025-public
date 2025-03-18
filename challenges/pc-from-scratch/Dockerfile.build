@@ -1,0 +1,82 @@
+FROM python:alpine AS build
+
+WORKDIR /build
+
+COPY challenge/lib/pfs /build/pfs
+COPY challenge/lib/main.py /build/
+
+FROM alpine:latest AS emulator
+
+RUN apk add zip
+
+WORKDIR /build
+
+COPY challenge/emulator /build/emulator
+
+WORKDIR /build/emulator
+
+RUN zip -r /build/emulator.sb3 .
+
+FROM build AS challenge0
+
+COPY challenge/0/build.py /build/
+COPY challenge/0/challenge.sm.template /build/
+
+ARG FLAG0=FLAG0
+
+RUN FLAG=${FLAG0} python /build/build.py
+
+RUN python /build/main.py asm /build/challenge.sm -o /build/challenge.sx
+
+FROM build AS challenge1
+
+COPY challenge/1/build.py /build/
+COPY challenge/1/challenge.sm.template /build/
+
+ARG FLAG1=FLAG1
+ARG KEY=KEY
+
+RUN FLAG=${FLAG1} KEY=${KEY} python /build/build.py
+
+RUN python /build/main.py asm /build/challenge.sm -o /build/challenge.sx
+
+FROM build AS challenge2
+
+COPY challenge/2/build.py /build/
+COPY challenge/2/challenge.sm.template /build/
+
+ARG FLAG2=FLAG2
+ARG P=1
+ARG Q=1
+
+RUN FLAG=${FLAG2} P=${P} Q=${Q} python /build/build.py
+
+RUN python /build/main.py asm /build/challenge.sm -o /build/challenge.sx 
+
+FROM build AS challenge3
+
+COPY challenge/3/build.py /build/
+COPY challenge/3/challenge.sm.template /build/
+
+RUN FLAG="flag-placeholder" python /build/build.py
+
+RUN python /build/main.py asm /build/challenge.sm -o /build/challenge.sx
+
+FROM python:alpine AS final
+
+WORKDIR /build
+
+COPY --from=emulator /build/emulator.sb3 /build/emulator.sb3
+
+COPY --from=challenge0 /build/challenge.sm /build/0/challenge.sm
+COPY --from=challenge0 /build/challenge.sx /build/0/challenge.sx
+
+COPY --from=challenge1 /build/challenge.sm /build/1/challenge.sm
+COPY --from=challenge1 /build/challenge.sx /build/1/challenge.sx
+
+COPY --from=challenge2 /build/challenge.sm /build/2/challenge.sm
+COPY --from=challenge2 /build/challenge.sx /build/2/challenge.sx
+COPY --from=challenge2 /build/output /build/2/output
+
+COPY --from=challenge3 /build/challenge.sm /build/3/challenge.sm
+COPY --from=challenge3 /build/challenge.sx /build/3/challenge.sx

@@ -1,0 +1,27 @@
+[
+  {
+    "title": "LEGO Star Wars Millennium Falcon",
+    "description": "This iconic LEGO set features over 7,500 pieces and is a detailed replica of the Millennium Falcon from the Star Wars universe. It includes minifigures of Han Solo, Chewbacca, Princess Leia, and other beloved characters. The set is designed for experienced builders and is perfect for display or play.",
+    "image": "0.jpg"
+  },
+  {
+    "title": "LEGO Titanic",
+    "description": "This majestic LEGO set is a faithful recreation of the iconic RMS Titanic, made up of over 9,000 pieces! It stretches over 4 feet long, making it one of the largest LEGO models ever made. It features intricate details like lifeboats, the grand staircase, and even the famous smokestacks. Whether you're a history buff or a LEGO enthusiast, this set is sure to be the centerpiece of your collection.",
+    "image": "1.jpg"
+  },
+  {
+    "title": "LEGO Spider-Man",
+    "description": "Straight from the halls of Comic-Con, we have an exclusive collector's item! This rare Spider-Man piece features the iconic red lower legs, a must-have for any die-hard fan. Released only during the 2013 San Diego Comic-Con, this limited edition collectible is nearly impossible to find today. Imagine adding this exclusive figure to your collection and being the envy of all your friends!",
+    "image": "2.png"
+  },
+  {
+    "title": "LEGO Porsche 911",
+    "description": "This set captures the essence of the iconic Porsche 911 in stunning detail, featuring sleek curves, an authentic color scheme, and a fully detailed interior. Imagine yourself building this beauty, brick by brick, until you have a true masterpiece on your hands. Whether you're a car enthusiast or a LEGO fan, this set will rev up your collection.",
+    "image": "3.webp"
+  },
+  {
+    "title": "LEGO 14k Solid Gold 2x4 Brick",
+    "description": "This dazzling brick isn't just any ordinary LEGO piece; it's crafted from solid 14-karat gold, making it a true gem for any LEGO enthusiast or collector. Whether you're displaying it as a centerpiece in your collection or keeping it as a unique investment, this golden LEGO brick is sure to shine bright.",
+    "image": "4.webp"
+  }
+]

@@ -1,0 +1,249 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "Printer Jam",
+  "active": true,
+  "challenges": [
+    {
+      "name": "Stuck On Top (1/4)",
+      "category": "Pwnage",
+      "value": 4,
+      "host": {
+        "index": 0
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/0/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/0/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG1"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "directory",
+          "path": "challenge",
+          "name": "source.zip"
+        },
+        {
+          "type": "file",
+          "path": "build/worker"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 1,
+          "texts": [
+            {
+              "path": "text/0/HINT1.md"
+            }
+          ]
+        }
+      ],
+      "next": 1
+    },
+    {
+      "name": "Premium Logging (2/4)",
+      "category": "Pwnage",
+      "value": 8,
+      "host": {
+        "index": 0
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/1/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/1/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG2"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "directory",
+          "path": "challenge",
+          "name": "source.zip"
+        },
+        {
+          "type": "file",
+          "path": "build/worker"
+        }
+      ],
+      "next": 2
+    },
+    {
+      "name": "No SSH, No Problem (3/4)",
+      "category": "Pwnage",
+      "value": 16,
+      "host": {
+        "index": 0
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/2/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/2/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG3"
+            ]
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "type": "directory",
+          "path": "challenge",
+          "name": "source.zip"
+        },
+        {
+          "type": "file",
+          "path": "build/worker"
+        }
+      ],
+      "next": 3
+    },
+    {
+      "name": "Debugging (4/4)",
+      "category": "Pwnage",
+      "value": 12,
+      "host": {
+        "index": 0
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/3/CHAL-FR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/3/CHAL-EN.md"
+        }
+      ],
+      "flags": [
+        {
+          "case_sensitive": true,
+          "regex": false,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG4"
+            ]
+          }
+        }
+      ],
+      "hints": [
+        {
+          "cost": 3,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/3/HINT1-FR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/3/HINT1-EN.md"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.build",
+      "args": [
+        {
+          "type": "map",
+          "map": {
+            "FLAG1": "flag-fake-flag-for-testing"
+          }
+        }
+      ],
+      "files": [
+        {
+          "source": "/home/worker/worker",
+          "destination": "build/worker"
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "challenge/Dockerfile",
+      "ports": [
+        {
+          "type": "tcp",
+          "public": true,
+          "value": 9001
+        }
+      ],
+      "args": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG1",
+            "FLAG2",
+            "FLAG3",
+            "FLAG4"
+          ]
+        }
+      ],
+      "healthcheck": {
+        "test": "ps -aux | grep -c socat",
+        "retries": 3,
+        "interval": 0.5,
+        "timeout": 1.5
+      }
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test"
+    }
+  ]
+}

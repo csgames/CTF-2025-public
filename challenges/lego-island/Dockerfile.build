@@ -1,0 +1,20 @@
+FROM alpine:latest AS build
+
+RUN apk add --no-cache build-base cmake git
+
+WORKDIR /build
+
+RUN git clone --depth 1 https://github.com/isledecomp/SIEdit.git
+
+COPY challenge .
+
+WORKDIR /build/build
+
+ARG FLAG="\"FLAG\""
+
+RUN FLAG=$FLAG cmake ..
+RUN make -j6
+
+WORKDIR /build
+
+RUN build/build data/NOCD.SI NOCD.SI

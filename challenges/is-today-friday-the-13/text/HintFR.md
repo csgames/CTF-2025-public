@@ -1,0 +1,1 @@
+La date reçu est formater selon le paramètre "Format", et `%t%d` n'existe pas en Python, ce n'est donc pas passé dans une fonction Python.

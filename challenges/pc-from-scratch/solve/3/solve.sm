@@ -1,0 +1,35 @@
+$SECTION RAM
+
+@program
+    @program_init
+        INT ROM
+
+    @program_loop
+        # i > ROM + 64 -> @program_exit
+        DUP
+        INT ROM
+        INT 64
+        ADD
+        GT
+        INT @program_exit
+        SWAP
+        JNZ
+
+        # OUT <- *i
+        DUP
+        LOAD
+        INT OUT
+        SWAP
+        STORE
+
+        # i++
+        INT 1
+        ADD
+
+        # Loop
+        INT @program_loop
+        JMP
+
+    @program_exit
+        DROP
+        JMP

@@ -1,0 +1,96 @@
+{
+  "$schema": "../../doc/challenge.json",
+  "name": "Is It Friday The 13th",
+  "active": true,
+  "challenges": [
+    {
+      "value": 8,
+      "category": "Web",
+      "host": {
+        "index": 0,
+        "path": "/"
+      },
+      "descriptions": [
+        {
+          "language": "fr",
+          "path": "text/defiFR.md"
+        },
+        {
+          "language": "en",
+          "path": "text/challengeEN.md"
+        }
+      ],
+      "hints": [
+        {
+          "cost": 2,
+          "texts": [
+            {
+              "language": "fr",
+              "path": "text/HintFR.md"
+            },
+            {
+              "language": "en",
+              "path": "text/HintEN.md"
+            }
+          ]
+        }
+      ],
+      "flags": [
+        {
+          "regex": false,
+          "case_sensitive": true,
+          "values": {
+            "type": "env",
+            "path": "FLAG",
+            "keys": [
+              "FLAG"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "deploy": [
+    {
+      "type": "docker",
+      "path": "Dockerfile",
+      "healthcheck": {
+        "test": "ps -aux | grep fastapi",
+        "retries": 3,
+        "timeout": 2,
+        "interval": 5
+      },
+      "ports": [
+        {
+          "type": "http",
+          "public": true,
+          "value": 8000
+        }
+      ],
+      "env": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        }
+      ]
+    }
+  ],
+  "test": [
+    {
+      "type": "docker",
+      "path": "Dockerfile.test",
+      "env": [
+        {
+          "type": "env",
+          "path": "FLAG",
+          "keys": [
+            "FLAG"
+          ]
+        }
+      ]
+    }
+  ]
+}

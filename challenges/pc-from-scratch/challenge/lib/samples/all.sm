@@ -1,0 +1,120 @@
+$SECTION RAM
+
+@zero
+    $ZEROS 1
+
+@ram_data
+    $ZEROS 1
+
+$SECTION ROM
+
+@main
+    @math
+        INT 65535
+        INT 1
+        ADD
+        INT 1
+        SUB
+        INT 255
+        AND
+        INT 3
+        DIV
+        INT 5
+        MUL
+        INT 1234
+        XOR
+        INT 5423
+        OR
+        INT 5555
+        MOD
+        INT 5
+        SHL
+        INT 5
+        SHR
+        INT 1407
+        EQ
+        INT @stack
+        SWAP
+        JNZ
+        INT @fail
+        JMP
+
+    @stack
+        INT 1
+        INT 2
+        DUP
+        ROT
+        DROP
+        INT 3
+        SWAP
+        INT 1
+        EQ
+        SWAP
+        DROP
+        SWAP
+        DROP
+        INT @comparison
+        SWAP
+        JNZ
+        INT @fail
+        JMP
+
+    @comparison
+        INT 0
+        INT 1
+        NEQ
+        INT 0
+        GT
+        INT 2
+        LT
+        INT 1
+        EQ
+        INT @memory
+        SWAP
+        JNZ
+        INT @fail
+        JMP
+
+    @memory
+        INT @ram_data
+        INT 2
+        STORE
+        INT @ram_data
+        LOAD
+        INT 2
+        NEQ
+        INT @fail
+        SWAP
+        JNZ
+        INT @rom_data
+        LOAD
+        INT 3
+        EQ
+        INT @end
+        SWAP
+        JNZ
+        INT @fail
+        JMP
+
+    @end
+        INT OUT
+        DUP
+        INT 84
+        STORE
+        INT 0
+        STORE
+
+        HLT
+
+    @fail
+        INT OUT
+        DUP
+        INT 70
+        STORE
+        INT 0
+        STORE
+
+        HLT
+
+@rom_data
+    $DATA 3

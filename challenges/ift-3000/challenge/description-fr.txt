@@ -1,0 +1,11 @@
+Bienvenue a votre devoir final d'IFT-3000.
+
+Nous avons remarque que la moyenne de ce semestre est particulierement elevee pour les devoirs de programmation.
+Nous savons que certains d'entre vous utilisent ChatGPT pour les resoudre.
+Pour nous assurer que vous avez reellement assimile le contenu du cours, nous avons du changer le format.
+
+Au lieu d'ecrire du code, vous devez comprendre ce programme.
+Si vous y parvenez, vous obtiendrez des parties de la reponse.
+Combinez-les ensemble en suivant l'expression reguliere "FLAG_RE".
+
+Bonne chance

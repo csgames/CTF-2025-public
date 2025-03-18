@@ -1,0 +1,11 @@
+Welcome to your final assignment of IFT-3000.
+
+We noticed that the average this semester is especially high for programming assignments.
+We know some of you are using ChatGPT to solve them.
+To make sure you actually absorbed the class material, we had to change the format.
+
+Instead of writing code, you have to understand this program.
+If you manage to do so, you'll get parts of the answer.
+Combine them together following the regex "FLAG_RE".
+
+Good luck

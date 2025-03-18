@@ -1,0 +1,1187 @@
+$SECTION RAM
+
+@zero
+    $ZEROS 1
+
+@mem_i
+    $ZEROS 1
+
+@mem_to
+    $ZEROS 1
+
+@mem_from
+    $ZEROS 1
+
+@read_ptr
+    $ZEROS 1
+
+@read_max
+    $ZEROS 1
+
+@multiply_l
+@subtract_i
+@compare_i
+@print_hex_i
+    $ZEROS 1
+
+@multiply_r
+    $ZEROS 1
+
+@multiply_carry
+@subtract_borrow
+    $ZEROS 1
+
+@print_hex_ptr
+@compare_lptr
+@multiply_lptr
+@modulo_lptr
+    $ZEROS 1
+
+@compare_rptr
+@multiply_rptr
+@subtract_rptr
+    $ZEROS 1
+
+@multiply_optr
+@subtract_optr
+    $ZEROS 1
+
+@multiply_flag
+@subtract_flag
+    $ZEROS 1
+
+@modulo_lptr
+    $ZEROS 1
+
+@modulo_rptr
+    $ZEROS 1
+
+@modulo_optr
+    $ZEROS 1
+
+@modulo_i
+    $ZEROS 1
+
+@modulo_j
+    $ZEROS 1
+
+@modulo_quotient
+    $ZEROS 1
+
+@mod_exp_optr
+    $ZEROS 1
+
+@mod_exp_i
+    $ZEROS 1
+
+@mod_exp_base
+    $ZEROS 1
+
+@mod_exp_mptr
+    $ZEROS 1
+
+@mod_exp_temp
+    $ZEROS 1
+    $ZEROS 64
+
+@input
+    $ZEROS 1
+    $ZEROS 33
+
+@result
+    $ZEROS 1
+    $ZEROS 64
+
+$SECTION ROM
+
+@entry
+    INT @main
+    JMP
+
+@e
+    $DATA {E}
+
+@n
+    $DATA {N_SIZE}
+    $DATA {N}
+
+@header
+    $DATA "Really Secure Algorithm", 0
+
+@main
+    @main_header
+        INT @main_header_next
+        INT @header
+        INT @print
+        JMP
+    @main_header_next
+
+    # Newline
+    INT OUT
+    INT 0
+    STORE
+
+    @main_loop
+        # @input = { 0 }
+        @main_clear
+            INT @main_clear_next
+            INT @input
+            INT 33
+            INT @memnull
+            JMP
+        @main_clear_next
+
+        # Print "> "
+        INT OUT
+        INT 62
+        STORE
+
+        INT OUT
+        INT 32
+        STORE
+
+        @main_read
+            INT @main_read_next
+            INT @input
+            INT 32
+            INT @read
+            JMP
+        @main_read_next
+
+        @main_encrypt
+            INT @main_encrypt_next
+            INT @result
+            INT @input
+            INT @e
+            LOAD
+            INT @n
+            INT @mod_exp
+            JMP
+        @main_encrypt_next
+
+        # Print "< "
+        INT OUT
+        INT 60
+        STORE
+
+        INT OUT
+        INT 32
+        STORE
+
+        @main_output
+            INT @main_output_next
+            INT @result
+            INT @print_hex
+            JMP
+        @main_output_next
+
+        # Loop
+        INT @main_loop
+        JMP
+
+@memcpy # (return, to, from, size)
+    @mem_init
+        # @mem_i = size - 1
+        INT 1
+        SUB
+        INT @mem_i
+        SWAP
+        STORE
+
+        # @mem_from = from
+        INT @mem_from
+        SWAP
+        STORE
+
+        # @mem_to = to
+        INT @mem_to
+        SWAP
+        STORE
+
+    @memcpy_skip
+        # @mem_from == @mem_to -> @memcpy_exit
+        INT @memcpy_exit
+        INT @mem_from
+        LOAD
+        INT @mem_to
+        LOAD
+        EQ
+        JNZ
+
+    @memcpy_loop
+        # @mem_i < 0 -> @memcpy_exit
+        INT @memcpy_exit
+        INT @mem_i
+        LOAD
+        INT 0
+        LT
+        JNZ
+
+        # @mem_to[@mem_i] = @mem_from[@mem_i]
+        INT @mem_to
+        LOAD
+        INT @mem_i
+        LOAD
+        ADD
+        INT @mem_from
+        LOAD
+        INT @mem_i
+        LOAD
+        ADD
+        LOAD
+        STORE
+
+        # @mem_i--
+        INT @mem_i
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @memcpy_loop
+        JMP
+
+    @memcpy_exit
+        JMP
+
+@memnull # (return, to, size)
+    @memnull_init
+        # @mem_i = size - 1
+        INT 1
+        SUB
+        INT @mem_i
+        SWAP
+        STORE
+
+        # @mem_to = to
+        INT @mem_to
+        SWAP
+        STORE
+
+    @memnull_loop
+        # @mem_i < 0 -> @memnull_exit
+        INT @memnull_exit
+        INT @mem_i
+        LOAD
+        INT 0
+        LT
+        JNZ
+
+        # @mem_to[@mem_i] = 0
+        INT @mem_to
+        LOAD
+        INT @mem_i
+        LOAD
+        ADD
+        INT 0
+        STORE
+
+        # @mem_i--
+        INT @mem_i
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @memnull_loop
+        JMP
+
+    @memnull_exit
+        JMP
+
+@read # (return, buffer, max_size)
+    @read_init
+        # @read_max = size
+        INT @read_max
+        SWAP
+        STORE
+
+        # @read_ptr = buffer
+        INT @read_ptr
+        SWAP
+        STORE
+
+    @read_loop
+        # @read_ptr->size == @read_max -> @read_exit
+        INT @read_exit
+        INT @read_ptr
+        LOAD
+        LOAD
+        INT @read_max
+        LOAD
+        EQ
+        JNZ
+
+        # temp_in = IN
+        INT IN
+        LOAD
+
+        # OUT <- temp_in
+        DUP
+        INT OUT
+        SWAP
+        STORE
+
+        # temp_in == 0 -> @read_clear
+        DUP
+        INT 0
+        EQ
+        INT @read_clear
+        SWAP
+        JNZ
+
+        # temp = &@read_ptr->buffer[@read_ptr->size]
+        INT @read_ptr
+        LOAD
+        DUP
+        LOAD
+        ADD
+        INT 1
+        ADD
+
+        # *temp = temp_in
+        SWAP
+        STORE
+
+        # @read_ptr->size++
+        INT @read_ptr
+        LOAD
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @read_loop
+        JMP
+
+    @read_clear
+        DROP
+
+    @read_exit
+        JMP
+
+@print # (return, buffer)
+    @print_loop
+        # t = *buffer
+        DUP
+        LOAD
+
+        # OUT <- t
+        DUP
+        INT OUT
+        SWAP
+        STORE
+
+        # t == 0 -> @print_exit
+        INT 0
+        EQ
+        INT @print_exit
+        SWAP
+        JNZ
+
+        # buffer++
+        INT 1
+        ADD
+
+        # Loop
+        INT @print_loop
+        JMP
+
+    @print_exit
+        DROP
+        JMP
+
+@hex
+    $DATA "0123456789ABCDEF"
+
+@print_hex # (return, buffer)
+    @print_hex_init
+        # @print_hex_ptr = buffer
+        INT @print_hex_ptr
+        SWAP
+        STORE
+
+        # @print_hex_i = 0
+        INT @print_hex_i
+        INT 0
+        STORE
+
+    @print_hex_loop
+        # @print_hex_i == @print_hex_ptr->size -> @print_hex_exit
+        INT @print_hex_exit
+        INT @print_hex_i
+        LOAD
+        INT @print_hex_ptr
+        LOAD
+        LOAD
+        EQ
+        JNZ
+
+        # temp = @print_hex_ptr->buffer[@print_hex_i]
+        INT @print_hex_ptr
+        LOAD
+        INT 1
+        ADD
+        INT @print_hex_i
+        LOAD
+        ADD
+        LOAD
+
+        # OUT <- @hex[temp >> 4]
+        DUP
+        INT 16
+        DIV
+        INT @hex
+        ADD
+        LOAD
+        INT OUT
+        SWAP
+        STORE
+
+        # OUT <- @hex[temp & 0xF]
+        INT 15
+        AND
+        INT @hex
+        ADD
+        LOAD
+        INT OUT
+        SWAP
+        STORE
+
+        # @print_hex_i++
+        INT @print_hex_i
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @print_hex_loop
+        JMP
+
+    @print_hex_exit
+        # Print
+        INT OUT
+        INT 0
+        STORE
+
+        JMP
+
+@strip # (return, buffer)
+    @strip_loop
+        # buffer_ptr->size < 2 -> @strip_exit
+        DUP
+        LOAD
+        INT 2
+        LT
+        INT @strip_exit
+        SWAP
+        JNZ
+
+        # buffer_ptr->buffer[buffer_ptr->size - 1] != 0 -> @strip_exit
+        DUP
+        DUP
+        LOAD
+        ADD
+        LOAD
+        INT 0
+        NEQ
+        INT @strip_exit
+        SWAP
+        JNZ
+
+        # buffer_ptr->size--
+        DUP
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @strip_loop
+        JMP
+
+    @strip_exit
+        DROP
+        JMP
+
+@compare # (return, left, right)
+    @compare_init
+        # @compare_rptr = right
+        INT @compare_rptr
+        SWAP
+        STORE
+
+        # @compare_lptr = left
+        INT @compare_lptr
+        SWAP
+        STORE
+
+    @compare_size
+        # t = @compare_lptr->size - @compare_rptr->size
+        INT @compare_lptr
+        LOAD
+        LOAD
+        INT @compare_rptr
+        LOAD
+        LOAD
+        SUB
+
+        # t < 0 -> @compare_less_than
+        DUP
+        INT 0
+        LT
+        INT @compare_less_than
+        SWAP
+        JNZ
+
+        # t > 0 -> @compare_greater_than
+        INT 0
+        GT
+        INT @compare_greater_than
+        SWAP
+        JNZ
+
+    @compare_loop_init
+        # @compare_i = size
+        INT @compare_i
+        INT @compare_lptr
+        LOAD
+        LOAD
+        STORE
+
+    @compare_loop
+        # @compare_i == 0 -> @compare_equal
+        INT @compare_equal
+        INT @compare_i
+        LOAD
+        INT 0
+        EQ
+        JNZ
+
+        # t = @compare_lptr->buffer[@compare_i - 1] - @compare_rptr->buffer[@compare_i - 1]
+        INT @compare_lptr
+        LOAD
+        INT @compare_i
+        LOAD
+        ADD
+        LOAD
+        INT @compare_rptr
+        LOAD
+        INT @compare_i
+        LOAD
+        ADD
+        LOAD
+        SUB
+
+        # t < 0 -> @compare_less_than
+        DUP
+        INT 0
+        LT
+        INT @compare_less_than
+        SWAP
+        JNZ
+
+        # t > 0 -> @compare_greater_than
+        INT 0
+        GT
+        INT @compare_greater_than
+        SWAP
+        JNZ
+
+        # @compare_i--
+        INT @compare_i
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @compare_loop
+        JMP
+
+    @compare_equal
+        INT 0
+        SWAP
+
+        JMP
+
+    @compare_less_than
+        DROP
+        INT 1
+        SWAP
+
+        JMP
+
+    @compare_greater_than
+        INT 2
+        SWAP
+
+        JMP
+
+@subtract # (return, result, left, right)
+          # Assumes: left > right
+
+    @subtract_init
+        # @subtract_rptr = right
+        INT @subtract_rptr
+        SWAP
+        STORE
+
+        # @subtract_optr = result
+        SWAP
+        INT @subtract_optr
+        SWAP
+        STORE
+
+        # memcpy(@subtract_optr, left, left->size + 1)
+        INT @subtract_memcpy_next
+        SWAP
+        INT @subtract_optr
+        LOAD
+        SWAP
+        DUP
+        LOAD
+        INT 1
+        ADD
+        INT @memcpy
+        JMP
+        @subtract_memcpy_next
+
+        # @subtract_i = 0
+        INT @subtract_i
+        INT 0
+        STORE
+
+        # @subtract_borrow = 0
+        INT @subtract_borrow
+        INT 0
+        STORE
+
+    @subtract_loop
+        # (@subtract_flag = @subtract_i > @subtract_rptr->size - 1) && borrow == 0 -> @subtract_exit
+        INT @subtract_exit
+        INT @subtract_i
+        LOAD
+        INT @subtract_rptr
+        LOAD
+        LOAD
+        INT 1
+        SUB
+        GT
+        DUP
+        INT @subtract_flag
+        SWAP
+        STORE
+        INT @subtract_borrow
+        LOAD
+        INT 0
+        EQ
+        AND
+        JNZ
+
+        # t = @subtract_optr->buffer[@subtract_i]
+        INT @subtract_optr
+        LOAD
+        INT 1
+        ADD
+        INT @subtract_i
+        LOAD
+        ADD
+        LOAD
+
+        # t2 = @subtract_flag ? 0 : @subtract_rptr->buffer[@subtract_i]
+        INT 0
+        INT @subtract_skip_rptr
+        INT @subtract_flag
+        LOAD
+        JNZ
+        DROP
+        INT @subtract_rptr
+        LOAD
+        INT 1
+        ADD
+        INT @subtract_i
+        LOAD
+        ADD
+        LOAD
+        @subtract_skip_rptr
+
+        # t3 = t1 - t2 - @subtract_borrow
+        SUB
+        INT @subtract_borrow
+        LOAD
+        SUB
+
+        # t4 = (@subtract_borrow = t3 < 0) ? t3 : t3 + 256
+        DUP
+        INT 0
+        LT
+        DUP
+        INT @subtract_borrow
+        SWAP
+        STORE
+        INT 0
+        EQ
+        INT @subtract_skip_borrow
+        SWAP
+        JNZ
+        INT 256
+        ADD
+        @subtract_skip_borrow
+
+        # @subtract_optr->buffer[@subtract_i] = t4
+        INT @subtract_optr
+        LOAD
+        INT 1
+        ADD
+        INT @subtract_i
+        LOAD
+        ADD
+        SWAP
+        STORE
+
+        # @subtract_i++
+        INT @subtract_i
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @subtract_loop
+        JMP
+
+    @subtract_exit
+        # arg: Return address
+        INT @subtract_optr
+        LOAD
+        INT @strip
+        JMP
+
+@multiply # (return, result, left, right)
+    @multiply_init
+        # @multiply_rptr = right
+        INT @multiply_rptr
+        SWAP
+        STORE
+
+        # @multiply_lprt = left
+        INT @multiply_lptr
+        SWAP
+        STORE
+
+        # @multiply_optr = result
+        INT @multiply_optr
+        SWAP
+        STORE
+
+        # @multiply_l = 0
+        INT @multiply_l
+        INT 0
+        STORE
+
+    @multiply_loop
+        # @multiply_l == @multiply_lptr->size -> @multiply_size
+        INT @multiply_size
+        INT @multiply_l
+        LOAD
+        INT @multiply_lptr
+        LOAD
+        LOAD
+        EQ
+        JNZ
+
+        # @multiply_r = 0
+        INT @multiply_r
+        INT 0
+        STORE
+
+        # @multiply_carry = 0
+        INT @multiply_carry
+        INT 0
+        STORE
+
+        @multiply_inner_loop
+            # (@multiply_flag = @multiply_r > @multiply_rptr->size - 1) && @multiply_carry == 0 -> @multiply_inner_end
+            INT @multiply_inner_end
+            INT @multiply_r
+            LOAD
+            INT @multiply_rptr
+            LOAD
+            LOAD
+            INT 1
+            SUB
+            GT
+            DUP
+            INT @multiply_flag
+            SWAP
+            STORE
+            INT @multiply_carry
+            LOAD
+            INT 0
+            EQ
+            AND
+            JNZ
+
+            # t1 = &@multiply_optr->buffer[i + j]
+            INT @multiply_optr
+            LOAD
+            INT 1
+            ADD
+            INT @multiply_l
+            LOAD
+            ADD
+            INT @multiply_r
+            LOAD
+            ADD
+
+            # t2 = *t1
+            DUP
+            LOAD
+
+            # t3 = @multiply_lptr->buffer[@multiply_l]
+            INT @multiply_lptr
+            LOAD
+            INT @multiply_l
+            LOAD
+            ADD
+            INT 1
+            ADD
+            LOAD
+
+            # t4 = @multiply_flag ? 0 : @multiply_rptr->buffer[@multiply_r]
+            INT 0
+            INT @multiply_skip
+            INT @multiply_flag
+            LOAD
+            JNZ
+            DROP
+            INT @multiply_rptr
+            LOAD
+            INT @multiply_r
+            LOAD
+            ADD
+            INT 1
+            ADD
+            LOAD
+            @multiply_skip
+
+            # t5 = t3 * t4
+            MUL
+
+            # t6 = t2 + t5 + @multiply_carry
+            ADD
+            INT @multiply_carry
+            LOAD
+            ADD
+
+            # *t1 = t6 & 0xFF
+            DUP
+            ROT
+            INT 0xFF
+            AND
+            STORE
+
+            # @multiply_carry = t5 >> 8
+            INT 8
+            SHR
+            INT @multiply_carry
+            SWAP
+            STORE
+
+            # @multiply_r++
+            INT @multiply_r
+            DUP
+            LOAD
+            INT 1
+            ADD
+            STORE
+
+            # Loop
+            INT @multiply_inner_loop
+            JMP
+        @multiply_inner_end
+
+        # @multiply_l++
+        INT @multiply_l
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        # Loop
+        INT @multiply_loop
+        JMP
+
+    @multiply_size
+        # @multiply_optr->size = @multiply_lprt->size + @multiply_rprt->size
+        INT @multiply_optr
+        LOAD
+        INT @multiply_lptr
+        LOAD
+        LOAD
+        INT @multiply_rptr
+        LOAD
+        LOAD
+        ADD
+        STORE
+
+    @multiply_exit
+        # arg: Return address
+        INT @multiply_optr
+        LOAD
+        INT @strip
+        JMP
+
+@modulo # (return, result, left, right)
+    @modulo_init
+        # @modulo_rptr = right
+        INT @modulo_rptr
+        SWAP
+        STORE
+
+        # @modulo_lptr = left
+        INT @modulo_lptr
+        SWAP
+        STORE
+
+        # result->size = 0
+        DUP
+        INT 0
+        STORE
+
+        # @modulo_optr = result
+        INT @modulo_optr
+        SWAP
+        STORE
+
+        # @modulo_i = @modulo_lptr->size - 1
+        INT @modulo_i
+        INT @modulo_lptr
+        LOAD
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+    @modulo_loop
+        # @modulo_i < 0 -> @modulo_exit
+        INT @modulo_exit
+        INT @modulo_i
+        LOAD
+        INT 0
+        LT
+        JNZ
+
+        # @modulo_j = @modulo_optr->size - 1
+        INT @modulo_j
+        INT @modulo_optr
+        LOAD
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        @modulo_shift
+            # @modulo_j < 0 -> @modulo_shift_next
+            INT @modulo_shift_next
+            INT @modulo_j
+            LOAD
+            INT 0
+            LT
+            JNZ
+
+            # @modulo_optr->buffer[@modulo_j + 1] = @modulo_optr->buffer[@modulo_j]
+            INT @modulo_optr
+            LOAD
+            INT 1
+            ADD
+            INT @modulo_j
+            LOAD
+            ADD
+            DUP
+            LOAD
+            SWAP
+            INT 1
+            ADD
+            SWAP
+            STORE
+
+            # @modulo_j--
+            INT @modulo_j
+            DUP
+            LOAD
+            INT 1
+            SUB
+            STORE
+
+            # Loop
+            INT @modulo_shift
+            JMP
+        @modulo_shift_next
+
+        # @modulo_optr->buffer[0] = @modulo_lptr->buffer[@modulo_i]
+        INT @modulo_optr
+        LOAD
+        INT 1
+        ADD
+        INT @modulo_lptr
+        LOAD
+        INT 1
+        ADD
+        INT @modulo_i
+        LOAD
+        ADD
+        LOAD
+        STORE
+
+        # @modulo_optr->size++
+        INT @modulo_optr
+        LOAD
+        DUP
+        LOAD
+        INT 1
+        ADD
+        STORE
+
+        @modulo_divide
+            # *@modulo_optr < *@modulo_rptr -> @modulo_divide_next
+            INT @modulo_divide_next
+            INT @modulo_divide_compare
+            INT @modulo_optr
+            LOAD
+            INT @modulo_rptr
+            LOAD
+            INT @compare
+            JMP
+            @modulo_divide_compare
+            INT 1
+            EQ
+            JNZ
+
+            # *@modulo_optr -= *@modulo_rptr
+            INT @modulo_divide
+            INT @modulo_optr
+            LOAD
+            INT @modulo_optr
+            LOAD
+            INT @modulo_rptr
+            LOAD
+            INT @subtract
+            JMP
+        @modulo_divide_next
+
+        # @modulo_i--
+        INT @modulo_i
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @modulo_loop
+        JMP
+
+    @modulo_exit
+        JMP
+
+@mod_exp # (return, result, base, exp, mod)
+    @mod_exp_init
+        # @mod_exp_mptr = mod
+        INT @mod_exp_mptr
+        SWAP
+        STORE
+
+        # @mod_exp_i = exp
+        INT @mod_exp_i
+        SWAP
+        STORE
+
+        # @mod_exp_base = base
+        INT @mod_exp_base
+        SWAP
+        STORE
+
+        # result->size = 1
+        DUP
+        INT 1
+        STORE
+
+        # result->buffer[0] = 1
+        DUP
+        INT 1
+        ADD
+        INT 1
+        STORE
+
+        # @mod_exp_optr = result
+        INT @mod_exp_optr
+        SWAP
+        STORE
+
+    @mod_exp_loop
+        # @mod_exp_i < 1 -> @mod_exp_exit
+        INT @mod_exp_exit
+        INT @mod_exp_i
+        LOAD
+        INT 1
+        LT
+        JNZ
+
+        # @mod_exp_temp = @mod_exp_optr * @mod_exp_base
+        INT @mod_exp_multiply
+        INT @mod_exp_temp
+        INT @mod_exp_optr
+        LOAD
+        INT @mod_exp_base
+        LOAD
+        INT @multiply
+        JMP
+        @mod_exp_multiply
+
+        # @mod_exp_optr = @mod_exp_temp % @mod_exp_mptr
+        INT @mod_exp_modulo
+        INT @mod_exp_optr
+        LOAD
+        INT @mod_exp_temp
+        INT @mod_exp_mptr
+        LOAD
+        INT @modulo
+        JMP
+        @mod_exp_modulo
+
+        # *@mod_exp_temp = 0
+        INT @mod_exp_clean
+        INT @mod_exp_temp
+        INT 65
+        INT @memnull
+        JMP
+        @mod_exp_clean
+
+        # @mod_exp_i--
+        INT @mod_exp_i
+        DUP
+        LOAD
+        INT 1
+        SUB
+        STORE
+
+        # Loop
+        INT @mod_exp_loop
+        JMP
+
+    @mod_exp_exit
+        JMP

@@ -1,0 +1,13 @@
+FROM ubuntu:24.04 AS test
+
+RUN apt update
+RUN DEBIAN_FRONTEND=noninteractive apt -y install python3 python3-pip
+
+WORKDIR /test
+
+COPY solve/requirements.txt requirements.txt
+RUN pip install --break-system-packages -r requirements.txt
+
+COPY solve /test/solve
+
+CMD ["python3", "/test/solve/solve.py"]

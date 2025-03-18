@@ -1,0 +1,1 @@
+#define eval(_)char d[]=data;i=0;main(){for(;i<sizeof(data)-1;i++)d[i]=d[i]^#_[i+OFFSET];printf(d);}
