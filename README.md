@@ -1,30 +1,27 @@
-`[Nom de la compétition]`
-----------------
+# CTF
 
-Directeur de compétition: `[@directeur]`
+Directeurs de compétition: Alexandre Aubut et Alexandre Lavoie
 
-Description préliminaire: `[Lors de cette compétition, les participants devront regler des problèmes!]`
+## Infrastructure
 
+### Requirements
 
-Résumé
-----------------
-Tâche 1:
+- [Docker](https://docs.docker.com/get-started/get-docker/)
+    - For Linux, make sure [your user is part of the docker group](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)
+- [Python](https://www.python.org/)
+    - [ctf-builder](https://pypi.org/project/ctf-builder/)
 
-`[Lire document 1]`<br>
-`[Implémenter solution 1]`
+### Challenges
 
-Tâche 2: 
+```bash
+ctf build
+ctf docker start
+```
 
-`[Lire document 2]`<br>
-`[Implémenter solution 2]`
+### CTFd
 
+```bash
+ctf ctfd dev
+```
 
-Info communication
-----------------
-
-`Le participant doit savoir développer`
-
-Info infra
-----------------
-
-`Le participant doit avoir accès à un ordinateur`
+Default credentials are username `admin` and password `admin`.
